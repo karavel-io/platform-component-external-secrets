@@ -1,0 +1,5 @@
+external-secrets:
+  image: nginx
+  tag: latest
+prometheus:
+  enable: false
