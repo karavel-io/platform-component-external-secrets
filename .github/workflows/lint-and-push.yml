@@ -43,9 +43,9 @@ jobs:
           chart=$(ls dist)
           helm s3 push dist/$chart edge
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: eu-west-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.PLATFORM_COMPONENTS_AWS_ACCESS_KEY_ID  }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PLATFORM_COMPONENTS_AWS_SECRET_ACCESS_KEY  }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
           HELM_BUCKET_NAME: ${{ secrets.HELM_BUCKET_NAME }}
           HELM_BUCKET_PREFIX: ${{ secrets.HELM_BUCKET_PREFIX }}
 
