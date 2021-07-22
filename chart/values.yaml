@@ -1,5 +1,24 @@
-external-secrets:
-  image: nginx
-  tag: latest
-prometheus:
+pollingIntervalMs: 300000
+
+aws:
   enable: false
+  region: ""
+  defaultRegion: eu-west-1
+  eksRole: ""
+  iamRole: ""
+
+vault:
+  enable: false
+  address: https://vault.vault.svc.cluster.local:8200
+  engine:
+    version: v2
+    path: secret
+  namespace: ""
+  auth:
+    kubernetes:
+      enabled: true
+      mountPath: kubernetes
+      role: karavel
+
+prometheus:
+  enable: true

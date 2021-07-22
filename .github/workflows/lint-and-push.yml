@@ -1,0 +1,51 @@
+name: Lint and push edge release
+on:
+  push:
+    branches:
+      - '*'
+  pull_request: {}
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.6.2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.1.0
+
+      - name: Lint component charts
+        run: ct lint --charts chart
+
+      - name: Check if changed
+        if: github.ref == 'refs/heads/main'
+        id: list-changed
+        run: |
+          changed=$(ct list-changed)
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
+
+      - name: Push to unstable registry
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          helm plugin install https://github.com/hypnoglow/helm-s3.git --version v0.10.0
+          helm repo add edge s3://$HELM_BUCKET_NAME/$HELM_BUCKET_PREFIX
+          helm package chart -d dist
+          chart=$(ls dist)
+          helm s3 push dist/$chart edge
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-west-1
+          HELM_BUCKET_NAME: ${{ secrets.HELM_BUCKET_NAME }}
+          HELM_BUCKET_PREFIX: ${{ secrets.HELM_BUCKET_PREFIX }}
+

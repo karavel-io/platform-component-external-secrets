@@ -1,38 +1,141 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: {{ include "external-secrets.name" . }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/name: {{ include "external-secrets.name" . }}
-    {{- include "external-secrets.labels" . | nindent 4 }}
-rules:
-  - apiGroups: ['*']
-    resources: ['*']
-    verbs: ['*']
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: {{ include "external-secrets.name" . }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/name: {{ include "external-secrets.name" . }}
-    {{- include "external-secrets.labels" . | nindent 4 }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: RoleBinding
-  name: {{ include "external-secrets.name" . }}
-subjects:
-  - kind: ServiceAccount
-    name: {{ include "external-secrets.name" . }}
-    namespace: {{ .Release.Namespace }}
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ include "external-secrets.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ include "external-secrets.name" . }}
     {{- include "external-secrets.labels" . | nindent 4 }}
+  {{ with .Values.aws.eksRole }}
+  annotations:
+    eks.amazonaws.com/role-arn: {{ . }}
+  {{ end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "external-secrets.name" . }}
+  labels:
+    {{- include "external-secrets.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - "external-secrets.io"
+    resources:
+      - "secretstores"
+      - "clustersecretstores"
+      - "externalsecrets"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - apiGroups:
+      - "external-secrets.io"
+    resources:
+      - "externalsecrets"
+      - "externalsecrets/status"
+    verbs:
+      - "update"
+      - "patch"
+  - apiGroups:
+      - ""
+    resources:
+      - "serviceaccounts"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - apiGroups:
+      - ""
+    resources:
+      - "configmaps"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - apiGroups:
+      - ""
+    resources:
+      - "secrets"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+      - "create"
+      - "update"
+      - "delete"
+  - apiGroups:
+      - ""
+    resources:
+      - "serviceaccounts/token"
+    verbs:
+      - "create"
+  - apiGroups:
+      - ""
+    resources:
+      - "events"
+    verbs:
+      - "create"
+      - "patch"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "external-secrets.name" . }}-leaderelection
+  namespace: {{ .Release.Namespace }}
+  labels:
+  {{- include "external-secrets.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - "configmaps"
+    resourceNames:
+      - "external-secrets-controller"
+    verbs:
+      - "get"
+      - "update"
+      - "patch"
+  - apiGroups:
+      - ""
+    resources:
+      - "configmaps"
+    verbs:
+      - "create"
+  - apiGroups:
+      - "coordination.k8s.io"
+    resources:
+      - "leases"
+    verbs:
+      - "get"
+      - "create"
+      - "update"
+      - "patch"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "external-secrets.name" . }}
+  labels:
+  {{- include "external-secrets.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "external-secrets.name" . }}
+subjects:
+  - name: {{ include "external-secrets.name" . }}
+    namespace: {{ .Release.Namespace }}
+    kind: ServiceAccount
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "external-secrets.name" . }}-leaderelection
+  labels:
+  {{- include "external-secrets.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "external-secrets.name" . }}-leaderelection
+subjects:
+  - name: {{ include "external-secrets.name" . }}
+    namespace: {{ .Release.Namespace }}
+    kind: ServiceAccount

@@ -1,0 +1,36 @@
+{{- if .Values.vault.enable }}
+{{- with .Values.vault }}
+apiVersion: external-secrets.io/v1alpha1
+kind: ClusterSecretStore
+metadata:
+  name: vault
+  labels:
+  {{- include "external-secrets.labels" $ | nindent 4 }}
+spec:
+  provider:
+    vault:
+      server: {{ .address }}
+      namespace: {{ .namespace }}
+      version: {{ .engine.version }}
+      path: {{ .engine.path }}
+      {{- with .auth }}
+      auth:
+        {{- if .kubernetes.enabled }}
+        kubernetes:
+          mountPath: {{ .kubernetes.mountPath }}
+          role: {{ .kubernetes.role }}
+          serviceAccountRef:
+            name: {{ include "external-secrets.name" $ }}-vault-store
+            namespace:  {{ $.Release.Namespace }}
+        {{- end }}
+      {{- end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "external-secrets.name" $ }}-vault-store
+  namespace: {{ $.Release.Namespace }}
+  labels:
+  {{- include "external-secrets.labels" $ | nindent 4 }}
+{{- end }}
+{{- end }}
