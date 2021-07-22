@@ -43,7 +43,7 @@ jobs:
           helm repo add unstable s3://$HELM_BUCKET_NAME/unstable
           helm package chart -d dist
           chart=$(ls dist)
-          helm s3 push --force ./dist/$chart unstable
+          helm s3 push --force ./dist/$chart unstable --relative
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PLATFORM_COMPONENTS_AWS_ACCESS_KEY_ID  }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PLATFORM_COMPONENTS_AWS_SECRET_ACCESS_KEY  }}
