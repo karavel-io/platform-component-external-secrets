@@ -22,6 +22,7 @@ jobs:
         run: ct lint --charts chart
 
   push:
+    needs: lint
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     steps:
