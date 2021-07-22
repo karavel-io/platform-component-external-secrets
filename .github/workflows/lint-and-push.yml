@@ -26,7 +26,7 @@ jobs:
         run: ct lint --charts chart
 
       - name: Check if changed
-        if: github.ref == 'refs/heads/main'
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         id: list-changed
         run: |
           changed=$(ct list-changed)
@@ -38,14 +38,13 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           helm plugin install https://github.com/hypnoglow/helm-s3.git --version v0.10.0
-          helm repo add edge s3://$HELM_BUCKET_NAME/$HELM_BUCKET_PREFIX
+          helm repo add unstable s3://$HELM_BUCKET_NAME/unstable
           helm package chart -d dist
           chart=$(ls dist)
-          helm s3 push dist/$chart edge
+          helm s3 push dist/$chart unstable
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.PLATFORM_COMPONENTS_AWS_ACCESS_KEY_ID  }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PLATFORM_COMPONENTS_AWS_SECRET_ACCESS_KEY  }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-          HELM_BUCKET_NAME: ${{ secrets.HELM_BUCKET_NAME }}
-          HELM_BUCKET_PREFIX: ${{ secrets.HELM_BUCKET_PREFIX }}
+          AWS_DEFAULT_REGION: eu-west-1
+          HELM_BUCKET_NAME: ${{ secrets.PLATFORM_COMPONENTS_BUCKET_NAME }}
 
