@@ -43,6 +43,7 @@ karavel.io/component-version: {{ .Chart.Version }}
 Selector labels
 */}}
 {{- define "external-secrets.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "external-secrets.name" . }}
 app.kubernetes.io/part-of: {{ include "external-secrets.name" . }}
 app.kubernetes.io/managed-by: karavel
 karavel.io/component-name: {{ .Chart.Name }}

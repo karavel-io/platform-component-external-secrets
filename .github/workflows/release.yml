@@ -17,8 +17,14 @@ jobs:
         with:
           version: v3.6.2
 
+      - name: Get tag
+        id: tag
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+
       - name: Package component
-        run: helm package chart -d dist
+        run: helm package chart -d dist --version $TAG
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
