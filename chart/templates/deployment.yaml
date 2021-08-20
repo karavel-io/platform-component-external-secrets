@@ -28,7 +28,7 @@ spec:
           args:
             - --enable-leader-election=true
             - --loglevel=info
-            - --metrics-addr=":8080"
+            - --metrics-addr=:8080
           ports:
             - name: metrics
               containerPort: 8080
