@@ -1,4 +1,4 @@
-site_name: External Secrets Component
+site_name: components/external-secrets
 site_url: https://docs.karavel.io/components/external-secrets
 repo_name: projectkaravel/platform-component-external-secrets
 repo_url: https://github.com/projectkaravel/platform-component-external-secrets
