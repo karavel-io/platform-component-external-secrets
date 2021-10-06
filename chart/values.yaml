@@ -1,5 +1,7 @@
 pollingIntervalMs: 300000
 
+defaultProvider:
+
 aws:
   enable: false
   region: ""

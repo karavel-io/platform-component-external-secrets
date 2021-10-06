@@ -12,4 +12,4 @@ External Secrets Operator is a Kubernetes operator that integrates external secr
 
 The External Secrets Component is licensed under the [Apache 2.0 license](LICENSE).
 
-The Karavel Container Platform is licensed under the [Apache 2.0 license](https://github.com/projectkaravel/platform/blob/main/LICENSE).
+The Karavel Container Platform is licensed under the [Apache 2.0 license](https://github.com/karavel-io/platform/blob/main/LICENSE).

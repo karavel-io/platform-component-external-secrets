@@ -1,9 +1,13 @@
 {{- if .Values.vault.enable }}
+{{- $name := "vault" }}
+{{- if eq $name .Values.defaultProvider }}
+{{- $name = "default" }}
+{{- end }}
 {{- with .Values.vault }}
 apiVersion: external-secrets.io/v1alpha1
 kind: ClusterSecretStore
 metadata:
-  name: vault
+  name: {{ $name }}
   labels:
   {{- include "external-secrets.labels" $ | nindent 4 }}
 spec:
