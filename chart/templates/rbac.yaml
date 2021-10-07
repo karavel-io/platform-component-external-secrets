@@ -129,6 +129,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ include "external-secrets.name" . }}-leaderelection
+  namespace: {{ .Release.Namespace }}
   labels:
   {{- include "external-secrets.labels" . | nindent 4 }}
 roleRef:
