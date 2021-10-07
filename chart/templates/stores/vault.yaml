@@ -26,7 +26,7 @@ spec:
           mountPath: {{ .kubernetes.mountPath }}
           role: {{ .kubernetes.role }}
           serviceAccountRef:
-            name: {{ include "external-secrets.name" $ }}-vault-store
+            name: {{ include "external-secrets.name" $ }}-{{ $name }}-store
             namespace:  {{ $.Release.Namespace }}
         {{- end }}
       {{- end }}
@@ -34,7 +34,7 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "external-secrets.name" $ }}-vault-store
+  name: {{ include "external-secrets.name" $ }}-{{ $name }}-store
   namespace: {{ $.Release.Namespace }}
   labels:
   {{- include "external-secrets.labels" $ | nindent 4 }}
