@@ -3,7 +3,7 @@ name: external-secrets
 description: External Secrets component for Karavel
 type: application
 version: 0.1.0-SNAPSHOT
-appVersion: 0.3.6
+appVersion: 0.3.10
 maintainers:
   - name: MatteoJoliveau
     email: matteo.joliveau@mikamai.com
