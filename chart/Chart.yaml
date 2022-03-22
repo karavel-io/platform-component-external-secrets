@@ -2,8 +2,8 @@ apiVersion: v2
 name: external-secrets
 description: External Secrets component for Karavel
 type: application
-version: 0.1.0-SNAPSHOT
-appVersion: 0.3.10
+version: 1.0.0
+appVersion: 0.4.4
 maintainers:
   - name: MatteoJoliveau
     email: matteo.joliveau@mikamai.com
@@ -14,5 +14,5 @@ sources:
   - https://github.com/karavel-io/platform-component-external-secrets
 
 annotations:
-  karavel.io/bootstrap: 'true'
+  karavel.io/bootstrap: "true"
   prometheus.enable: prometheus
