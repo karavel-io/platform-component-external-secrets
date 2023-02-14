@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2023-02-14
+
+### Fixed
+
+- Removed rogue CRD that cause the `ExternalSecret` CR to be rendered twice
+
 ## [1.1.0] - 2022-07-11
 
 ### Changed
@@ -20,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release
 
-[unreleased]: https://github.com/karavel-io/platform-component-external-secrets/compare/1.1.0...HEAD
+[unreleased]: https://github.com/karavel-io/platform-component-external-secrets/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/karavel-io/platform-component-external-secrets/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/karavel-io/platform-component-external-secrets/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/karavel-io/platform-component-external-secrets/releases/tag/1.0.0
